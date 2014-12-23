@@ -1,0 +1,5 @@
+- name: install required packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - numactl
+    - libaio

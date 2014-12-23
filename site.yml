@@ -1,0 +1,7 @@
+--- 
+
+- name: Configure mdm
+  hosts: mdm
+  roles:
+  - common
+  - mdm
