@@ -1,0 +1,5 @@
+- name: copy {{role_name}} files
+  copy: src={{scaleio_base_package_name}}-{{role_name}}-{{scaleio_version}}.el{{ansible_distribution_major_version}}.x86_64.rpm dest=/var/tmp/ mode=0644
+
+- name: install {{role_name}} package
+  yum: name=/var/tmp/{{scaleio_base_package_name}}-{{role_name}}-{{scaleio_version}}.el{{ansible_distribution_major_version}}.x86_64.rpm state=present

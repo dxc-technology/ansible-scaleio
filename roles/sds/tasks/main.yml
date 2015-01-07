@@ -1,0 +1,3 @@
+- set_fact: role_name=sds
+
+- include: ../../install_scaleio.yml
