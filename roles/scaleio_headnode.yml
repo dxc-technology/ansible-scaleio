@@ -1,0 +1,2 @@
+- set_fact: scaleio_mdm_headnode_ip="{{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+  when: scaleio_mdm_headnode_ip is not defined

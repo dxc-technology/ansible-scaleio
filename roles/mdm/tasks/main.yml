@@ -1,5 +1,7 @@
 - set_fact: role_name=mdm
 
+- include: ../../scaleio_headnode.yml
+
 - name: install pre-requisite packages
   yum: name={{ item }} state=latest
   with_items:
@@ -12,3 +14,29 @@
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "6"
 
 - include: ../../install_scaleio.yml 
+
+- name: add primary mdm
+  command: scli --add_primary_mdm --primary_mdm_ip {{ scaleio_mdm_headnode_ip }} --accept_license
+  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
+
+- name: send configure script to first mdm
+  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
+  template: src=headnode.sh.j2 mode=0755 dest=/tmp/headnode.sh
+
+- name: execute script to first mdm
+  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
+  command: /tmp/headnode.sh
+
+- name: send configure script to secondary mdm
+  when: scaleio_mdm_headnode_ip != ansible_{{ scaleio_interface }}['ipv4']['address']
+  template: src=second_node.sh.j2 mode=0755 dest=/tmp/second_node.sh
+
+- name: execute script on secondary mdm
+  when: scaleio_mdm_headnode_ip != ansible_{{ scaleio_interface }}['ipv4']['address']
+  command: /tmp/second_node.sh
+
+#- name: clean up scripts
+#  file: path={{ item }} state=absent
+#  with_items: 
+#   - /tmp/second_node.sh
+#   - /tmp/headnode.sh
