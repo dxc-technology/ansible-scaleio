@@ -1,19 +1,17 @@
 - set_fact: role_name=tb
 
-- include: ../../scaleio_headnode.yml
+- name: include modules
+  tasks:
+  include: {{ item }}
+  with_item: 
+    - "../../scaleio_headnode.yml"
+    - "../../install_scaleio.yml"
 
-- include: ../../install_scaleio.yml
-
-- name: send configure script to tb
+- name: send tb configure script 
   template: src=tb.sh.j2 mode=0755 dest=/tmp/tb.sh
   delegate_to: "{{ scaleio_mdm_headnode_ip }}"
 
 - name: execute script on tb
-  shell: path=/tmp/tb.sh
+  command: /tmp/tb.sh
   delegate_to: "{{ scaleio_mdm_headnode_ip }}"
-
-#- name: clean up scripts
-#  file: path={{ item }} state=absent
-#  with_items:
-#   - /tmp/tb.sh
 

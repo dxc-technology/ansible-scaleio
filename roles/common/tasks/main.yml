@@ -1,10 +1,10 @@
 ---
-
 #- name: debug
 #  debug: var=hostvars[inventory_hostname]
 
-- name: install required packages
-  yum: name={{ item }} state=latest
+- 
+  name: install required packages
+  yum: name="{{ item }}" state=latest
   with_items:
-    - numactl
-    - libaio
+     - numactl
+     - libaio

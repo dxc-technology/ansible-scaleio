@@ -1,0 +1,2 @@
+#scaleio_type: mdm
+sds_scaleio_devices: [ /home/vagrant/scaleio ]

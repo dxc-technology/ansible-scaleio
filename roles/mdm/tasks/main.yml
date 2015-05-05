@@ -1,6 +1,8 @@
 - set_fact: role_name=mdm
 
-- include: ../../scaleio_headnode.yml
+- name: setup the headnode
+  tasks:
+  include: ../../scaleio_headnode.yml
 
 - name: install pre-requisite packages
   yum: name={{ item }} state=latest
@@ -23,6 +25,10 @@
   when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
   template: src=headnode.sh.j2 mode=0755 dest=/tmp/headnode.sh
 
+- name: wait for mdm to be active
+  wait_for: port=6611 state=started
+  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
+
 - name: execute script to first mdm
   when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
   command: /tmp/headnode.sh
@@ -35,8 +41,9 @@
   when: scaleio_mdm_headnode_ip != ansible_{{ scaleio_interface }}['ipv4']['address']
   command: /tmp/second_node.sh
 
-#- name: clean up scripts
-#  file: path={{ item }} state=absent
-#  with_items: 
-#   - /tmp/second_node.sh
-#   - /tmp/headnode.sh
+- name: clean up scripts
+  file: path={{ item }} state=absent
+  with_items: 
+   - /tmp/second_node.sh
+   - /tmp/headnode.sh
+   - /tmp/tb.sh

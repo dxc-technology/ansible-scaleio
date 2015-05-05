@@ -1,5 +1,4 @@
 --- 
-
 - name: Configure mdm
   hosts: mdm
   roles:
@@ -13,3 +12,4 @@
   - common
   - tb
   - sds
+
