@@ -1,3 +1,13 @@
 - set_fact: role_name=sds
 
+- include: ../../scaleio_headnode.yml
+
 - include: ../../install_scaleio.yml
+
+- name: send sds configure script 
+  template: src=sds.sh.j2 mode=0755 dest="/tmp/sds_{{inventory_hostname}}.sh"
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+
+- name: execute script on headnode
+  command: "/tmp/sds_{{ inventory_hostname }}.sh"
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}"

@@ -1,17 +1,14 @@
 - set_fact: role_name=tb
 
-- name: include modules
-  tasks:
-  include: {{ item }}
-  with_item: 
-    - "../../scaleio_headnode.yml"
-    - "../../install_scaleio.yml"
+- include: ../../scaleio_headnode.yml
+
+- include: ../../install_scaleio.yml
 
 - name: send tb configure script 
   template: src=tb.sh.j2 mode=0755 dest=/tmp/tb.sh
   delegate_to: "{{ scaleio_mdm_headnode_ip }}"
 
-- name: execute script on tb
+- name: execute script on headnode
   command: /tmp/tb.sh
   delegate_to: "{{ scaleio_mdm_headnode_ip }}"
 
