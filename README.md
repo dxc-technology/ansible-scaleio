@@ -3,12 +3,17 @@ ansible-scaleio
 ansible-scaleio abstract. 1-2 sentences on what this actually does. Remember that all README.md files are required to be done in markdown format. Download a sample [README.md](http://emccode.github.io/sampledocs/README.md "README.md") to place in your project.
 
 ## Description
-a description of the ansible-scaleio more in depth. this can be 2-5 sentences and could also contain bullet points for use cases. Such as:
-- use case 1
-- use case 2
-  - sub use case A
-  - sub use case B
-- use case 3
+
+ansible-scaleio let's you do the following with ansible and scaleio:
+
+- Install ScaleIO
+
+- Configure the different roles:
+  - mdm
+  - sds
+  - tb
+
+- For the sds you can setup different type of storage.
 
 ## Installation
 
@@ -16,7 +21,7 @@ To install ansible-scaleio just clone the repo and see site.yml as a generic pla
 
 ## Usage Instructions
 
-Customize the roles and playbooks to your environment, you can use this to either Install ScaleIO or just enable the different modules on the nodes.
+Customize the roles and playbooks to your environment, you can use this to either to install ScaleIO or just enable the different modules on the nodes.
 ```
   ansible-playbooks -i hosts site.yml
 ```
@@ -26,6 +31,7 @@ Customize the roles and playbooks to your environment, you can use this to eithe
 - Add other roles
   - lia
   - callhome 
+- Extend to do more special setup with cache
 - Clean up the code
 
 
