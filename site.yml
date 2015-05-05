@@ -4,12 +4,15 @@
   roles:
   - common
   - mdm
-  - sds
 
 - name: Configure tb
   hosts: tb
   roles:
   - common
   - tb
-  - sds
 
+- name: Configure sds
+  hosts: sds
+  roles:
+  - common
+  - sds
