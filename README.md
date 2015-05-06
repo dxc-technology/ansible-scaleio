@@ -1,6 +1,6 @@
 ansible-scaleio
 ======================
-ansible-scaleio abstract. 1-2 sentences on what this actually does. Remember that all README.md files are required to be done in markdown format. Download a sample [README.md](http://emccode.github.io/sampledocs/README.md "README.md") to place in your project.
+ansible-scaleio is a way to manage ScaleIO through [Ansible](http://www.ansible.com/home "Ansible").
 
 ## Description
 
