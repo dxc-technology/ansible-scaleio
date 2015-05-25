@@ -12,6 +12,8 @@ ansible-scaleio let's you do the following with ansible and scaleio:
   - mdm
   - sds
   - tb
+  - lia
+  - gateway (to be used for API gateway mainly)
 
 - For the sds you can setup different type of storage.
 
@@ -29,7 +31,6 @@ Customize the roles and playbooks to your environment, you can use this to eithe
 ## Future
 - Enable the SDC client installation
 - Add other roles
-  - lia
   - callhome 
 - Extend to do more special setup with cache
 - Clean up the code
@@ -40,7 +41,7 @@ Create a fork of the project into your own reposity. Make all your necessary cha
 
 Licensing
 ---------
-“The MIT License (MIT) 
+The MIT License (MIT) 
 Copyright (c) [2015], [EMC Corporation)] 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
