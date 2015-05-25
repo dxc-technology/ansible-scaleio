@@ -2,7 +2,7 @@ YML := $(wildcard **/*.yml)
 
 .PHONY:
 all:
-	ansible-playbook -i hosts site.yml
+	ansible-playbook -i hosts  site.yml
 
 .PHONY:
 debug:

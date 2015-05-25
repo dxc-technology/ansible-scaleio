@@ -11,4 +11,5 @@
 - name: execute script on headnode
   command: /tmp/tb.sh
   delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+  ignore_errors: yes
 

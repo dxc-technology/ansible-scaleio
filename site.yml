@@ -4,12 +4,15 @@
   roles:
   - common
   - mdm
+  - lia
 
 - name: Configure tb
   hosts: tb
   roles:
   - common
   - tb
+  - gateway
+  - lia
 
 - name: Configure sds
   hosts: sds
