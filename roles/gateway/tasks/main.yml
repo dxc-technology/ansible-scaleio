@@ -1,12 +1,8 @@
 ---
 - set_fact: role_name=gateway
 
-- set_fact: scaleio_package_name="{{scaleio_base_package_name}}-{{role_name}}-{{scaleio_version}}.noarch.rpm"
-
 - name: Install pre-requisite java
   yum: name="java-1.7.0-openjdk-devel" state="present"
-
-#- include: ../../scaleio_headnode.yml
 
 - include: ../../install_scaleio.yml
 

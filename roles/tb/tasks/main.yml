@@ -1,7 +1,5 @@
 - set_fact: role_name=tb
 
-#- include: ../../scaleio_headnode.yml
-
 - include: ../../install_scaleio.yml
 
 - name: login with new password

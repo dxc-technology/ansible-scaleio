@@ -13,8 +13,6 @@
 
 - include: ../../install_scaleio.yml 
 
-### Above here is fine, below needs to change
-
 - name: add primary mdm
   command: scli --add_primary_mdm --primary_mdm_ip {{ scaleio_mdm_headnode_ip }} --accept_license
   run_once: true
