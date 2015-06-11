@@ -1,9 +1,5 @@
 - set_fact: role_name=mdm
 
-- name: setup the headnode
-  tasks:
-  include: ../../scaleio_headnode.yml
-
 - name: install pre-requisite packages
   yum: name={{ item }} state=latest
   with_items:
@@ -17,33 +13,48 @@
 
 - include: ../../install_scaleio.yml 
 
+### Above here is fine, below needs to change
+
 - name: add primary mdm
   command: scli --add_primary_mdm --primary_mdm_ip {{ scaleio_mdm_headnode_ip }} --accept_license
-  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
-
-- name: send configure script to first mdm
-  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
-  template: src=headnode.sh.j2 mode=0755 dest=/tmp/headnode.sh
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  ignore_errors: true
+  register: add_primary_mdm
+  changed_when: "'already configured' not in add_primary_mdm.stderr"
 
 - name: wait for mdm to be active
   wait_for: port=6611 state=started
-  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
 
-- name: execute script to first mdm
-  when: scaleio_mdm_headnode_ip == ansible_{{ scaleio_interface }}['ipv4']['address']
-  command: /tmp/headnode.sh
+- name: initial login
+  command: scli --login --username admin --password admin
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  ignore_errors: true
+  register: initial_login
 
-- name: send configure script to secondary mdm
-  when: scaleio_mdm_headnode_ip != ansible_{{ scaleio_interface }}['ipv4']['address']
-  template: src=second_node.sh.j2 mode=0755 dest=/tmp/second_node.sh
+- name: login with new password
+  command: scli --login --username admin --password "{{ scaleio_password }}"
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  when: initial_login.rc == 7
 
-- name: execute script on secondary mdm
-  when: scaleio_mdm_headnode_ip != ansible_{{ scaleio_interface }}['ipv4']['address']
-  command: /tmp/second_node.sh
+- name: set password
+  command: scli --set_password --old_password admin --new_password "{{ scaleio_password }}"
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  when: initial_login.rc == 0
 
-- name: clean up scripts
-  file: path={{ item }} state=absent
-  with_items: 
-   - /tmp/second_node.sh
-   - /tmp/headnode.sh
-   - /tmp/tb.sh
+- name: secondary node login
+  command: scli --login --mdm_ip {{ scaleio_mdm_headnode_ip }} --username admin --password {{ scaleio_password }}
+  run_once: true
+  delegate_to: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+
+- name: add secondary mdm
+  command: scli --add_secondary_mdm --mdm_ip {{ scaleio_mdm_headnode_ip }} --secondary_mdm_ip "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}" 
+  run_once: true
+  delegate_to: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+  ignore_errors: true
+

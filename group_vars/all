@@ -1,13 +1,13 @@
-scaleio_license: 
-scaleio_interface: eth1
+scaleio_license:
+scaleio_interface: eno16777736
 scaleio_base_package_name: EMC-ScaleIO
-scaleio_version: 1.31-258.2
+scaleio_version: 1.32-402.1
 scaleio_protection_domain: protection_domain1
 scaleio_cluster_mode: true
 scaleio_cluster_name: cluster1
 scaleio_password: Cluster1!
 scaleio_gateway_admin_password: 'Cluster1!'
 scaleio_lia_token: 'Cluster1!'
-# You can either set this variable to a fix ip, or it will 
+# You can either set this variable to a fix ip, or it will
 # automatically use the ip of the first mdm host in the hosts file
-scaleio_mdm_headnode_ip: 192.168.33.50
+scaleio_mdm_headnode_ip: 192.168.97.11

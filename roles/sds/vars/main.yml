@@ -1,1 +1,1 @@
-sds_scaleio_devices: ['/home/vagrant/scaleio1']
+sds_scaleio_devices: ['/scaleio_drive']
