@@ -2,4 +2,9 @@
 
 - include: ../../install_scaleio.yml
 
+- name: find disks
+  disk_facts:
+  register: disks
+
+- debug: var=disks.ansible_available_disks
 
