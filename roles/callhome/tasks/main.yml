@@ -3,9 +3,9 @@
 - include: ../../install_scaleio.yml
 
 - ini_file: dest="{{callhome_conf_file}}"
-            section={{ item.section }}
-            option={{ item.option }}
-            value={{ item.value }}
+            section="{{ item.section }}"
+            option="{{ item.option }}"
+            value="{{ item.value }}"
             backup=true
   when: item.value != ""
-  with_items: {{ scaleio_callhome_config }}
+  with_items: "{{ scaleio_callhome_config }}"

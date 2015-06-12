@@ -1,1 +1,1 @@
-callhome_conf_file: '/opt/emc/scaleio/callhome/cfg'
+callhome_conf_file: '/opt/emc/scaleio/callhome/cfg/conf.txt'

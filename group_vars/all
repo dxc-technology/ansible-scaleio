@@ -14,7 +14,7 @@ scaleio_callhome_config:
     - { section: 'general', option: 'email_from', value: 'from@somewhere.com' }
     - { section: 'general', option: 'username', value: '' }
     - { section: 'general', option: 'password', value: '' }
-    - { section: 'general', option: 'customer', value: 'somewhere' }
+    - { section: 'general', option: 'customer_name', value: 'somewhere' }
     - { section: 'smtp', option: 'host', value: '127.0.0.1' }
     - { section: 'smtp', option: 'username', value: '' }
     - { section: 'smtp', option: 'password', value: '' }
