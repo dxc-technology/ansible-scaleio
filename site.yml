@@ -13,20 +13,20 @@
   tags: common
   roles: 
   - common
+# Installing lia seems to break mdm connections, not sure why, leaving disabled for now.
+#  - lia
 
 - name: Configure mdm
   hosts: mdm
   tags: mdm
   roles:
   - mdm
-#  - lia
 
 - name: Configure tb
   tags: tb
   hosts: tb
   roles:
   - tb
-#  - lia
 
 - name: Configure Gateway
   hosts: gateway
@@ -39,5 +39,17 @@
   hosts: sds
   roles:
   - sds
+
+- name: Configure callhome
+  tags: callhome
+  hosts: callhome
+  roles:
+  - callhome
+
+- name: Configure sdc
+  tags: sdc
+  hosts: sdc
+  roles:
+  - sdc
 
 

@@ -1,0 +1,12 @@
+- name: uninstall scaleio
+  hosts: all
+  tasks:
+  - name: install package
+    yum: name="{{ item }}" state="absent"
+    with_items:
+     - EMC-ScaleIO-lia
+     - EMC-ScaleIO-sds
+     - EMC-ScaleIO-mdm
+     - EMC-ScaleIO-callhome
+     - EMC-ScaleIO-sdc
+     - EMC-ScaleIO-tb
