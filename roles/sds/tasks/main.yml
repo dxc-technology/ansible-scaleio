@@ -2,4 +2,21 @@
 
 - include: ../../install_scaleio.yml
 
+- name: find disks
+  disk_facts:
+  register: disks
 
+- name: login to mdm
+  command: scli --login --mdm_ip {{ scaleio_mdm_headnode_ip }} --username admin --password "{{ scaleio_password }}"
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+
+- name: add storage pool
+  command: scli --add_storage_pool --protection_domain_name {{ scaleio_protection_domain }} --storage_pool_name {{ scaleio_storage_pool }}
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+  ignore_errors: true
+
+- name: add sds
+  command: scli --add_sds --mdm_ip {{ scaleio_mdm_headnode_ip }} --sds_ip {{ hostvars[inventory_hostname]['ansible_'+scaleio_interface]['ipv4']['address'] }} --storage_pool_name {{ scaleio_storage_pool }} --device_path {{ disks.ansible_available_disks|join(',') }} --sds_name "{{ inventory_hostname}}" --protection_domain_name {{ scaleio_protection_domain }}
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}"

@@ -48,11 +48,11 @@
 - name: secondary node login
   command: scli --login --mdm_ip {{ scaleio_mdm_headnode_ip }} --username admin --password {{ scaleio_password }}
   run_once: true
-  delegate_to: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+  delegate_to: "{{ scaleio_mdm_secondary_ip }}"
 
 - name: add secondary mdm
   command: scli --add_secondary_mdm --mdm_ip {{ scaleio_mdm_headnode_ip }} --secondary_mdm_ip "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}" 
   run_once: true
-  delegate_to: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+  delegate_to: "{{ scaleio_mdm_secondary_ip }}"
   ignore_errors: true
 

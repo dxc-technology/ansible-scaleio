@@ -1,8 +1,11 @@
 --- 
 - name:  set up facts
   hosts: all
+  tags: common 
   tasks:
   - set_fact: scaleio_mdm_headnode_ip="{{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+    run_once: true
+  - set_fact: scaleio_mdm_secondary_ip="{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
     run_once: true
 
 - name: Install Common
