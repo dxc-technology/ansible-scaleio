@@ -9,5 +9,14 @@ scaleio_password: Cluster1!
 scaleio_gateway_admin_password: 'Cluster1!'
 scaleio_lia_token: 'Cluster1!'
 scaleio_storage_pool: pool1
-# You can either set this variable to a fix ip, or it will
-# automatically use the ip of the first mdm host in the hosts file
+
+scaleio_callhome_config:
+    - { section: 'general', option: 'email_from', value: 'from@somewhere.com' }
+    - { section: 'general', option: 'username', value: '' }
+    - { section: 'general', option: 'password', value: '' }
+    - { section: 'general', option: 'customer', value: 'somewhere' }
+    - { section: 'smtp', option: 'host', value: '127.0.0.1' }
+    - { section: 'smtp', option: 'username', value: '' }
+    - { section: 'smtp', option: 'password', value: '' }
+    - { section: 'email_alert', option: 'email_to', value: 'to@somewhere.com' }
+    - { section: 'email_alert', option: 'severity', value: '' }

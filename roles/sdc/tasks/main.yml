@@ -1,0 +1,4 @@
+---
+# tasks file for sdc
+- set_fact: role_name=sdc
+- include: ../../install_scaleio.yml
