@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from subprocess import Popen, PIPE
 import sys
 
@@ -23,11 +25,11 @@ def main():
     for line in output_lines:
         line_array = line.split(" ")
         if 'disk' in line:
-            disks.append( line_array[0] )
+            disks.append( "/dev/%s" % line_array[0] )
         if 'part' in line:
             result = ''.join([i for i in line_array[0] if not i.isdigit()])
             try:
-                disks.remove( result )
+                disks.remove( "/dev/%s" % result )
             except:
                 continue
 
@@ -38,3 +40,4 @@ from ansible.module_utils.basic import *
 
 if __name__ == '__main__':
     main()
+

@@ -1,12 +1,10 @@
-- name: set filename
-  set_fact: scaleio_package_name="{{scaleio_base_package_name}}-{{role_name}}-{{scaleio_version}}.el{{ansible_distribution_major_version}}.x86_64.rpm"
-  when: scaleio_package_name is not defined or scaleio_package_name == ""
-
+---
 - name: copy files
-  copy: src="{{ scaleio_package_name }}" dest="/var/tmp/" mode="0644"
+  copy: src="{{ item }}" dest="/var/tmp/" mode="0644"
+  register: file
+  with_fileglob:
+    - "*{{role_name}}*"
 
 - name: install package
-  yum: name="/var/tmp/{{ scaleio_package_name }}" state="present"
+  yum: name="{{ file.results[0].dest }}" state="present"
 
-- name: unset scaleio_package_name for future roles
-  set_fact: scaleio_package_name=""
