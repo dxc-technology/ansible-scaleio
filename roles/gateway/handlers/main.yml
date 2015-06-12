@@ -1,5 +1,3 @@
 ---
-
-- 
-  name: restart gateway
+- name: restart gateway
   service: name="scaleio-gateway" state="restarted"

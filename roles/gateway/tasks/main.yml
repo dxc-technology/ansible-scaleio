@@ -1,12 +1,8 @@
 ---
 - set_fact: role_name=gateway
 
-- set_fact: scaleio_package_name="{{scaleio_base_package_name}}-{{role_name}}-{{scaleio_version}}.noarch.rpm"
-
 - name: Install pre-requisite java
   yum: name="java-1.7.0-openjdk-devel" state="present"
-
-- include: ../../scaleio_headnode.yml
 
 - include: ../../install_scaleio.yml
 
@@ -14,6 +10,5 @@
   lineinfile: backup="yes" dest="{{ gateway_user_properties_file }}" line="mdm.ip.addresses={{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }},{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}" regexp="^mdm.ip.addresses=$" state="present"
 
 - name: Setup gateway admin password
-#lineinfile: backup="yes" dest="{{ gateway_user_properties_file }}" line="gateway-admin.password={{ scaleio_gateway_admin_password }}" regexp="^gateway-admin.password=$" state="present"
-  raw: "java -jar /opt/emc/scaleio/gateway/webapps/ROOT/resources/install-CLI.jar --reset_password '{{ scaleio_gateway_admin_password }}' --config_file {{ gateway_user_properties_file }}"
+  command: java -jar /opt/emc/scaleio/gateway/webapps/ROOT/resources/install-CLI.jar --reset_password "{{ scaleio_gateway_admin_password }}" --config_file {{ gateway_user_properties_file }}
   notify: restart gateway

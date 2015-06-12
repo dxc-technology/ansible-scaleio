@@ -1,5 +1,3 @@
 ---
-
-- 
-  name: restart lia
+- name: restart lia
   service: name="lia" state="restarted"

@@ -1,15 +1,30 @@
 - set_fact: role_name=tb
 
-- include: ../../scaleio_headnode.yml
-
 - include: ../../install_scaleio.yml
 
-- name: send tb configure script 
-  template: src=tb.sh.j2 mode=0755 dest=/tmp/tb.sh
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+- name: login with new password
+  command: scli --login --username admin --password "{{ scaleio_password }}"
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
 
-- name: execute script on headnode
-  command: /tmp/tb.sh
+- name: add tie breaker
+  command: scli --add_tb --mdm_ip "{{ scaleio_mdm_headnode_ip }}" --tb_ip "{{ hostvars[groups['tb'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}" 
+  run_once: true
   delegate_to: "{{ scaleio_mdm_headnode_ip }}"
-  ignore_errors: yes
+  register: add_tb
+  changed_when: "'single mode' not in add_tb.stderr"
+  ignore_errors: true
 
+- name: switch to cluster mode
+  command: scli --switch_to_cluster_mode --mdm_ip "{{ scaleio_mdm_headnode_ip }}"
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  when: "'single mode' not in add_tb.stderr"
+
+- name: create the protection domain
+  command: scli --add_protection_domain --mdm_ip "{{ scaleio_mdm_headnode_ip }}" --protection_domain_name {{ scaleio_protection_domain }}
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  register: add_pd
+  changed_when: "'already exists' not in add_pd.stderr"
+  ignore_errors: true

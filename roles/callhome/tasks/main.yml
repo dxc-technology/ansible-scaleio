@@ -1,6 +1,4 @@
-- set_fact: role_name=lia
-
-- include: ../../scaleio_headnode.yml
+- set_fact: role_name=callhome
 
 - include: ../../install_scaleio.yml
 

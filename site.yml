@@ -1,24 +1,40 @@
 --- 
+- name:  set up facts
+  hosts: all
+  tasks:
+  - set_fact: scaleio_mdm_headnode_ip="{{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+    run_once: true
+
+- name: Install Common
+  hosts: all
+  tags: common
+  roles: 
+  - common
+
 - name: Configure mdm
   hosts: mdm
+  tags: mdm
   roles:
-  - common
   - mdm
-  - lia
+#  - lia
 
 - name: Configure tb
+  tags: tb
   hosts: tb
   roles:
-  - common
   - tb
-  - gateway
-  - lia
+#  - lia
 
-#
-# SDS need to happen after MDM's are setup.
-#
+- name: Configure Gateway
+  hosts: gateway
+  tags: gateway
+  roles:
+  - gateway
+
 - name: Configure sds
+  tags: sds
   hosts: sds
   roles:
-  - common
   - sds
+
+

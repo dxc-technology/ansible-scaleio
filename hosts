@@ -1,14 +1,16 @@
 [mdm]
-192.168.33.50
-192.168.33.51
+primary_mdm ansible_ssh_host=192.168.97.11
+secondary_mdm ansible_ssh_host=192.168.97.12
 
 [tb]
-192.168.33.52
+tb ansible_ssh_host=192.168.97.13
 
 [sds]
-192.168.33.50
-192.168.33.51
-192.168.33.52
+sds1 ansible_ssh_host=192.168.97.11
+sds2 ansible_ssh_host=192.168.97.12
+sds3 ansible_ssh_host=192.168.97.13
 
 [gateway]
-193.168.33.52
+gateway1 ansible_ssh_host=192.168.97.12
+gateway2 ansible_ssh_host=192.168.97.13
+

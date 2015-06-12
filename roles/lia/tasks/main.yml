@@ -1,7 +1,5 @@
 - set_fact: role_name=lia
 
-- include: ../../scaleio_headnode.yml
-
 - include: ../../install_scaleio.yml
 
 - name: set the lia token

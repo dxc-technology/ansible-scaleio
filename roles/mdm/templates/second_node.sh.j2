@@ -1,9 +1,0 @@
-#!/bin/sh
-
-PATH=/opt/emc/scaleio/{{ role_name }}/bin:$PATH
-
-# Add the secondary IP
-scli --login --mdm_ip {{ scaleio_mdm_headnode_ip }} --username admin --password {{ scaleio_password }}
-scli --add_secondary_mdm --mdm_ip {{ scaleio_mdm_headnode_ip }} --secondary_mdm_ip {{ hostvars[inventory_hostname]['ansible_'+scaleio_interface]['ipv4']['address'] }} 
-
-#
