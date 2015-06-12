@@ -13,6 +13,8 @@
   tags: common
   roles: 
   - common
+# Installing lia seems to break mdm connections, not sure why, leaving disabled for now.
+#  - lia
 
 - name: Configure mdm
   hosts: mdm
