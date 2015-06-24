@@ -1,0 +1,5 @@
+---
+scaleio_cinder_driver: "scaleio.py"
+scaleio_cinder_filters: "scaleio.filters"
+scaleio_config: "/etc/cinder/cinder_scaleio.config"
+

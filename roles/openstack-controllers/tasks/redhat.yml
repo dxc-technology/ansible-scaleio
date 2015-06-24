@@ -1,0 +1,48 @@
+---
+
+- name: Current Python version
+  command: python -c 'import sys; print "%s.%s" % (sys.version_info.major, sys.version_info.minor)'
+  register: version
+
+- name: Copy libvirt driver
+  copy:
+    src: "{{ scaleio_cinder_driver }}"
+    dest: "/usr/lib/python{{ version.stdout }}/site-packages/cinder/volume/drivers/{{ scaleio_cinder_driver }}"
+
+- name: Copy ScaleIO Filters
+  copy:
+    src: "{{ scaleio_cinder_filters }}"
+    dest: /etc/cinder/rootwrap.d/
+
+- name: modify cinder to include scaleio driver
+  ini_file:
+    dest: /etc/cinder/cinder.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: true
+    with_items:
+      - { section: "DEFAULT", option: "volume_driver", value: "cinder.volume.drivers.emc.scaleio.ScaleIODriver" }
+      - { section: "DEFAULT", option: "cinder_scaleio_config_file", value: "{{ scaleio_config}}" }
+      - { section: "DEFAULT", option: "enabled_backends", value: "ScaleIO"}
+      - { section: "ScaleIO", option: "volume_driver", value: "cinder.volume.drivers.emc.scaleio.ScaleIODriver" }
+      - { section: "ScaleIO", option: "cinder_scaleio_config_file", value: "{{ scaleio_config}}" }
+      - { section: "ScaleIO", option: "volume_backend_name", value: "ScaleIO" }
+
+- name: modify cinder_scaleio config
+  ini_file:
+    dest: "{{ scaleio_config }}"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: true
+    with_items:
+      - { section: "scaleio", option: "rest_server_ip", value: "{{ hostvars[groups['gateway'][0]]['ansible_' + scaleio_interface]['ipv4']['address'] }}" }
+      - { section: "scaleio", option: "rest_server_username", value: "admin" }
+      - { section: "scaleio", option: "rest_server_password", value: "{{ scaleio_password }}" }
+      - { section: "scaleio", option: "protection_domain_name", value: "{{ scaleio_protection_domain }}" }
+      - { section: "scaleio", option: "storage_pool_name", value: "{{ scaleio_storage_pool }}" }
+      - { section: "scaleio", option: "storage_pools", value: "{{ scaleio_protection_domain:scaleio_storage_pool }}" }
+      - { section: "scaleio", option: "round_volume_capacity", value: "False" }
+      - { section: "scaleio", option: "force_delete", value: "True" }
+

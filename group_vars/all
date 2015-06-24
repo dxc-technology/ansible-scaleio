@@ -1,14 +1,14 @@
 scaleio_license:
-scaleio_interface: em3 
+scaleio_interface: em3
 scaleio_base_package_name: EMC-ScaleIO
 scaleio_version: 1.32-402.1
-scaleio_protection_domain: protection_domain1
+scaleio_protection_domain: pd1
 scaleio_cluster_mode: true
 scaleio_cluster_name: cluster1
 scaleio_password: Cluster1!
 scaleio_gateway_admin_password: 'Cluster1!'
 scaleio_lia_token: 'Cluster1!'
-scaleio_storage_pool: pool1
+scaleio_storage_pool: default
 
 scaleio_callhome_config:
     - { section: 'general', option: 'email_from', value: 'from@somewhere.com' }

@@ -1,0 +1,19 @@
+---
+# defaults file for openstack-compute
+scaleio_libvirt_driver: "scaleiolibvirtdriver.py"
+scaleio_nova_filters: "scaleio.filters"
+nova_volume_drivers: >
+  "iscsi=nova.virt.libvirt.volume.LibvirtISCSIVolumeDriver,
+   iser=nova.virt.libvirt.volume.LibvirtISERVolumeDriver,
+   local=nova.virt.libvirt.volume.LibvirtVolumeDriver,
+   fake=nova.virt.libvirt.volume.LibvirtFakeVolumeDriver,
+   rbd=nova.virt.libvirt.volume.LibvirtNetVolumeDriver,
+   sheepdog=nova.virt.libvirt.volume.LibvirtNetVolumeDriver,
+   nfs=nova.virt.libvirt.volume.LibvirtNFSVolumeDriver,
+   aoe=nova.virt.libvirt.volume.LibvirtAOEVolumeDriver,
+   glusterfs=nova.virt.libvirt.volume.LibvirtGlusterfsVolumeDriver,
+   fibre_channel=nova.virt.libvirt.volume.LibvirtFibreChannelVolumeDriver,
+   scality=nova.virt.libvirt.volume.LibvirtScalityVolumeDriver,
+   scaleio=nova.virt.libvirt.scaleiolibvirtdriver.LibvirtScaleIOVolumeDriver"
+
+
