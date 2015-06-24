@@ -52,4 +52,14 @@
   roles:
   - sdc
 
+- name: Configure openstack-controllers
+  tags: openstack-controllers
+  hosts: openstack-controllers
+  roles:
+  - openstack-controllers
 
+- name: Configure openstack-compute
+  tags: openstack-compute
+  hosts: openstack-compute
+  roles:
+  - openstack-compute

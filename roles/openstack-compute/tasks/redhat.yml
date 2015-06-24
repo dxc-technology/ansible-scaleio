@@ -1,0 +1,27 @@
+---
+
+- name: Current Python version
+  command: python -c 'import sys; print "%s.%s" % (sys.version_info.major, sys.version_info.minor)'
+  register: version
+
+- name: Copy libvirt driver
+  copy:
+    src: "{{ scaleio_libvirt_driver }}"
+    dest: "/usr/lib/python{{ version.stdout }}/site-packages/nova/virt/libvirt/{{ scaleio_libvirt_driver }}"
+
+- name: Copy ScaleIO Filters
+  copy:
+    src: "{{ scaleio_nova_filters }}"
+    dest: /etc/nova/rootwrap.d/
+
+- name: Modify Nova to include ScaleIO driver
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: libvirt
+    option: volume_drivers
+    value: "{{ nova_volume_drivers }}"
+    backup: true
+    register: nova_conf
+
+
+
