@@ -1,13 +1,13 @@
 ---
-
 - name: Current Python version
   command: python -c 'import sys; print "%s.%s" % (sys.version_info.major, sys.version_info.minor)'
   register: version
+  changed_when: false
 
 - name: Copy libvirt driver
   copy:
     src: "{{ scaleio_libvirt_driver }}"
-    dest: "/usr/lib/python{{ version.stdout }}/site-packages/nova/virt/libvirt/{{ scaleio_libvirt_driver }}"
+    dest: "/usr/lib/python{{ version.stdout }}/site-packages/nova/virt/libvirt/"
 
 - name: Copy ScaleIO Filters
   copy:
@@ -21,7 +21,3 @@
     option: volume_drivers
     value: "{{ nova_volume_drivers }}"
     backup: true
-    register: nova_conf
-
-
-
