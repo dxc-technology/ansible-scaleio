@@ -3,9 +3,14 @@
   hosts: all
   tags: common 
   tasks:
-  - set_fact: scaleio_mdm_headnode_ip="{{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+  - set_fact: 
+      scaleio_mdm_headnode_ip: "{{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
     run_once: true
-  - set_fact: scaleio_mdm_secondary_ip="{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+  - set_fact: 
+      scaleio_mdm_secondary_ip: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+    run_once: true
+  - set_fact: 
+      scaleio_gateway_ip: "{{ hostvars[groups['gateway'][0]]['ansible_'+ scaleio_interface]['ipv4']['address'] }}"
     run_once: true
 
 - name: Install Common
@@ -13,8 +18,6 @@
   tags: common
   roles: 
   - common
-# Installing lia seems to break mdm connections, not sure why, leaving disabled for now.
-#  - lia
 
 - name: Configure mdm
   hosts: mdm
