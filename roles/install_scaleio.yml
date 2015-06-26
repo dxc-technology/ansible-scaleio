@@ -1,12 +1,17 @@
 ---
 - name: copy files
-  copy: src="{{ item }}" dest="/var/tmp/" mode="0644"
+  copy: 
+    src: "{{ item }}" 
+    dest: "/var/tmp/" 
+    mode: "0644"
   register: file
   with_fileglob:
     - "*{{role_name}}*"
 
 - name: install package
-  yum: name="{{ file.results[0].dest }}" state="present"
+  yum: 
+    name: "{{ file.results[0].dest }}" 
+    state: present
   environment:
-    MDM_IP: "{{ scaleio_mdm_secondary_ip }},{{scaleio_mdm_primary_ip}}"
+    MDM_IP: "{{ scaleio_mdm_secondary_ip }},{{ scaleio_mdm_primary_ip }}"
 
