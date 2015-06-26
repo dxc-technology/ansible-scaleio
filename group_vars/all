@@ -20,3 +20,10 @@ scaleio_callhome_config:
     - { section: 'smtp', option: 'password', value: '' }
     - { section: 'email_alert', option: 'email_to', value: 'to@somewhere.com' }
     - { section: 'email_alert', option: 'severity', value: '' }
+
+
+scaleio_mdm_primary_ip: "{{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+scaleio_mdm_secondary_ip: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+scaleio_gateway_ip: "{{ hostvars[groups['gateway'][0]]['ansible_'+ scaleio_interface]['ipv4']['address'] }}"
+scaleio_tb_ip: "{{ hostvars[groups['tb'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+

@@ -6,17 +6,60 @@
   disk_facts:
   register: disks
 
-- name: login to mdm
-  command: scli --login --mdm_ip {{ scaleio_mdm_headnode_ip }} --username admin --password "{{ scaleio_password }}"
+# The primary mdm will move if the service has been
+# restarted.  Lets make sure we know where it is.
+#
+- name: wait_for
+  local_action:
+    module: wait_for
+    host: "{{ item }}"
+    port: 6611
+    delay: 5
+    timeout: 10
+    state: present
+  ignore_errors: true
+  register: mdm
+  with_flattened:
+    - groups.mdm
+    - groups.tb
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+
+# Since there is no global set_fact this needs to be ran
+# over all nodes and set for each.
+#
+- name: set_fact scaleio_mdm_current_primary_ip
+  local_action:
+    module: set_fact
+    scaleio_mdm_current_primary_ip: "{{ item['item'] }}"
+  with_items: mdm.results
+  when: item|success
+
+- name: login to mdm
+  command: > 
+    scli --login 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
+    --username admin 
+    --password "{{ scaleio_password }}"
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
 
 - name: add storage pool
-  command: scli --add_storage_pool --protection_domain_name {{ scaleio_protection_domain }} --storage_pool_name {{ scaleio_storage_pool }}
+  command: > 
+    scli --add_storage_pool
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
+    --protection_domain_name {{ scaleio_protection_domain }} 
+    --storage_pool_name {{ scaleio_storage_pool }}
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
   ignore_errors: true
 
 - name: add sds
-  command: scli --add_sds --mdm_ip {{ scaleio_mdm_headnode_ip }} --sds_ip {{ hostvars[inventory_hostname]['ansible_'+scaleio_interface]['ipv4']['address'] }} --storage_pool_name {{ scaleio_storage_pool }} --device_path {{ disks.ansible_available_disks|join(',') }} --sds_name "{{ inventory_hostname}}" --protection_domain_name {{ scaleio_protection_domain }}
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+  command: > 
+    scli --add_sds 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
+    --sds_ip {{ hostvars[inventory_hostname]['ansible_'+scaleio_interface]['ipv4']['address'] }} 
+    --storage_pool_name {{ scaleio_storage_pool }} 
+    --device_path {{ disks.ansible_available_disks|join(',') }} 
+    --sds_name "{{ inventory_hostname }}" 
+    --protection_domain_name {{ scaleio_protection_domain }}
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
