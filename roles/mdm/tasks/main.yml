@@ -14,44 +14,73 @@
 - include: ../../install_scaleio.yml 
 
 - name: add primary mdm
-  command: scli --add_primary_mdm --primary_mdm_ip {{ scaleio_mdm_headnode_ip }} --accept_license
+  command: scli --add_primary_mdm --primary_mdm_ip {{ scaleio_mdm_primary_ip }} --accept_license
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  delegate_to: "{{ scaleio_mdm_primary_ip }}"
   ignore_errors: true
   register: add_primary_mdm
   changed_when: "'already configured' not in add_primary_mdm.stderr"
 
-- name: wait for mdm to be active
-  wait_for: port=6611 state=started
+# The primary mdm will move if the service has been
+# restarted.  Lets make sure we know where it is.
+#
+- name: wait_for
+  local_action:
+    module: wait_for
+    host: "{{ item }}"
+    port: 6611
+    delay: 5
+    timeout: 15
+    state: present
+  ignore_errors: true
+  register: mdm
+  with_flattened:
+    - groups.mdm
+    - groups.tb
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+
+# Since there is no global set_fact this needs to be ran
+# over all nodes and set for each.
+#
+- name: set_fact scaleio_mdm_current_primary_ip
+  local_action:
+    module: set_fact
+    scaleio_mdm_current_primary_ip: "{{ item['item'] }}"
+  with_items: mdm.results
+  when: item|success
 
 - name: initial login
   command: scli --login --username admin --password admin
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
   ignore_errors: true
   register: initial_login
 
 - name: login with new password
   command: scli --login --username admin --password "{{ scaleio_password }}"
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
   when: initial_login.rc == 7
 
 - name: set password
   command: scli --set_password --old_password admin --new_password "{{ scaleio_password }}"
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
   when: initial_login.rc == 0
 
 - name: secondary node login
-  command: scli --login --mdm_ip {{ scaleio_mdm_headnode_ip }} --username admin --password {{ scaleio_password }}
+  command: > 
+    scli --login
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
+    --username admin --password {{ scaleio_password }}
   run_once: true
   delegate_to: "{{ scaleio_mdm_secondary_ip }}"
 
 - name: add secondary mdm
-  command: scli --add_secondary_mdm --mdm_ip {{ scaleio_mdm_headnode_ip }} --secondary_mdm_ip "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}" 
+  command: > 
+    scli --add_secondary_mdm 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
+    --secondary_mdm_ip "{{ scaleio_mdm_secondary_ip }}"
   run_once: true
   delegate_to: "{{ scaleio_mdm_secondary_ip }}"
   ignore_errors: true

@@ -8,5 +8,5 @@
 - name: install package
   yum: name="{{ file.results[0].dest }}" state="present"
   environment:
-    MDM_IP: "{{ scaleio_mdm_secondary_ip }},{{scaleio_mdm_headnode_ip}}"
+    MDM_IP: "{{ scaleio_mdm_secondary_ip }},{{scaleio_mdm_primary_ip}}"
 

@@ -1,18 +1,4 @@
 --- 
-- name:  set up facts
-  hosts: all
-  tags: common 
-  tasks:
-  - set_fact: 
-      scaleio_mdm_headnode_ip: "{{ hostvars[groups['mdm'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
-    run_once: true
-  - set_fact: 
-      scaleio_mdm_secondary_ip: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
-    run_once: true
-  - set_fact: 
-      scaleio_gateway_ip: "{{ hostvars[groups['gateway'][0]]['ansible_'+ scaleio_interface]['ipv4']['address'] }}"
-    run_once: true
-
 - name: Install Common
   hosts: all
   tags: common
@@ -31,12 +17,6 @@
   roles:
   - tb
 
-- name: Configure Gateway
-  hosts: gateway
-  tags: gateway
-  roles:
-  - gateway
-
 - name: Configure sds
   tags: sds
   hosts: sds
@@ -54,6 +34,12 @@
   hosts: sdc
   roles:
   - sdc
+
+- name: Configure Gateway
+  hosts: gateway
+  tags: gateway
+  roles:
+  - gateway
 
 - name: Configure openstack-controllers
   tags: openstack-controllers

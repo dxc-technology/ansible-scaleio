@@ -2,29 +2,69 @@
 
 - include: ../../install_scaleio.yml
 
-- name: login with new password
-  command: scli --login --username admin --password "{{ scaleio_password }}"
+# The primary mdm will move if the service has been
+# restarted.  Lets make sure we know where it is.
+#
+- name: wait_for 
+  local_action:
+    module: wait_for
+    host: "{{ item }}"
+    port: 6611
+    delay: 5
+    timeout: 10
+    state: present
+  ignore_errors: true
+  register: mdm
+  with_flattened: 
+    - groups.mdm
+    - groups.tb
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+
+# Since there is no global set_fact this needs to be ran 
+# over all nodes and set for each.
+#
+- name: set_fact scaleio_mdm_current_primary_ip
+  local_action:
+    module: set_fact
+    scaleio_mdm_current_primary_ip: "{{ item['item'] }}"
+  with_items: mdm.results
+  when: item|success
+
+- name: scli login
+  command: > 
+    scli --login 
+    --username admin 
+    --password "{{ scaleio_password }}" 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
+  run_once: true
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
 
 - name: add tie breaker
-  command: scli --add_tb --mdm_ip "{{ scaleio_mdm_headnode_ip }}" --tb_ip "{{ hostvars[groups['tb'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}" 
+  command: > 
+    scli --add_tb 
+    --tb_ip {{ scaleio_tb_ip }} 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}"
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
   register: add_tb
   changed_when: "'single mode' not in add_tb.stderr"
   ignore_errors: true
 
 - name: switch to cluster mode
-  command: scli --switch_to_cluster_mode --mdm_ip "{{ scaleio_mdm_headnode_ip }}"
+  command: > 
+    scli --switch_to_cluster_mode 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
   when: "'single mode' not in add_tb.stderr"
 
 - name: create the protection domain
-  command: scli --add_protection_domain --mdm_ip "{{ scaleio_mdm_headnode_ip }}" --protection_domain_name {{ scaleio_protection_domain }}
+  command: >
+    scli --add_protection_domain 
+    --protection_domain_name {{ scaleio_protection_domain }} 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
   run_once: true
-  delegate_to: "{{ scaleio_mdm_headnode_ip }}" 
+  delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
   register: add_pd
   changed_when: "'already exists' not in add_pd.stderr"
   ignore_errors: true

@@ -10,3 +10,4 @@
      - EMC-ScaleIO-callhome
      - EMC-ScaleIO-sdc
      - EMC-ScaleIO-tb
+     - EMC-ScaleIO-gateway
