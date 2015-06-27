@@ -42,13 +42,13 @@
   - gateway
 
 - name: Configure openstack-controllers
-  tags: openstack-controllers
-  hosts: openstack-controllers
+  tags: controller
+  hosts: controller
   roles:
   - openstack-controllers
 
 - name: Configure openstack-compute
-  tags: openstack-compute
-  hosts: openstack-compute
+  tags: compute
+  hosts: compute
   roles:
   - openstack-compute
