@@ -45,6 +45,7 @@
     backup: true
   with_items:
     - { section: "scaleio", option: "rest_server_ip", value: "{{ scaleio_gateway_ip }}" }
+    - { section: "scaleio", option: "rest_server_port", value: "{{ scaleio_gateway_port }}" }
     - { section: "scaleio", option: "rest_server_username", value: "admin" }
     - { section: "scaleio", option: "rest_server_password", value: "{{ scaleio_password }}" }
     - { section: "scaleio", option: "protection_domain_name", value: "{{ scaleio_protection_domain }}" }
