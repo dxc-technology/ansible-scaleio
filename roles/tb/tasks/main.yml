@@ -5,17 +5,16 @@
 # The primary mdm will move if the service has been
 # restarted.  Lets make sure we know where it is.
 #
-- name: wait_for 
-  local_action:
-    module: wait_for
+- name: wait_for mdm available and find the location of the primary mdm
+  wait_for:
     host: "{{ item }}"
     port: 6611
     delay: 5
-    timeout: 10
+    timeout: 15
     state: present
   ignore_errors: true
   register: mdm
-  with_flattened: 
+  with_flattened:
     - groups.mdm
     - groups.tb
   run_once: true

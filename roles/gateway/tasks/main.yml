@@ -14,6 +14,12 @@
     regexp: "^mdm.ip.addresses=$" 
     state: present
 
+- name: Configure gateway port
+  template:
+    dest: /opt/emc/scaleio/gateway/conf/server.xml
+    src: server.xml.j2
+    backup: true
+
 - name: Setup gateway admin password
   command: > 
     java -jar /opt/emc/scaleio/gateway/webapps/ROOT/resources/install-CLI.jar

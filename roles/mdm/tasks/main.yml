@@ -16,7 +16,7 @@
 - name: add primary mdm
   command: scli --add_primary_mdm --primary_mdm_ip {{ scaleio_mdm_primary_ip }} --accept_license
   run_once: true
-  delegate_to: "{{ scaleio_mdm_primary_ip }}"
+  delegate_to: "{{ scaleio_mdm_primary_mgmt_ip }}"
   ignore_errors: true
   register: add_primary_mdm
   changed_when: "'already configured' not in add_primary_mdm.stderr"
@@ -24,9 +24,8 @@
 # The primary mdm will move if the service has been
 # restarted.  Lets make sure we know where it is.
 #
-- name: wait_for
-  local_action:
-    module: wait_for
+- name: wait_for mdm available and find the location of the primary mdm
+  wait_for:
     host: "{{ item }}"
     port: 6611
     delay: 5
@@ -74,7 +73,7 @@
     --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
     --username admin --password {{ scaleio_password }}
   run_once: true
-  delegate_to: "{{ scaleio_mdm_secondary_ip }}"
+  delegate_to: "{{ scaleio_mdm_secondary_mgmt_ip }}"
 
 - name: add secondary mdm
   command: > 
@@ -82,6 +81,6 @@
     --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
     --secondary_mdm_ip "{{ scaleio_mdm_secondary_ip }}"
   run_once: true
-  delegate_to: "{{ scaleio_mdm_secondary_ip }}"
+  delegate_to: "{{ scaleio_mdm_secondary_mgmt_ip }}"
   ignore_errors: true
 
