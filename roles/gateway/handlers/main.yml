@@ -1,3 +1,14 @@
 ---
+# Gateway service does not seem to handle a restart properly
+#
 - name: restart gateway
-  service: name="scaleio-gateway" state="restarted"
+  service: 
+    name: scaleio-gateway
+    state: stopped
+  notify: start gateway
+
+- name: start gateway
+  service:
+    name: scaleio-gateway
+    state: stopped
+

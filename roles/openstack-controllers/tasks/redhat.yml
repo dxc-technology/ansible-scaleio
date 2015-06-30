@@ -9,8 +9,6 @@
   copy:
     src: "{{ scaleio_cinder_driver }}"
     dest: "/usr/lib/python{{ version.stdout }}/site-packages/cinder/volume/drivers/emc/"
-#  with_fileglob:
-#    - "*{{ scaleio_cinder_driver }}*"
 
 - name: copy scaleio filters
   copy:
@@ -45,7 +43,7 @@
     backup: true
   with_items:
     - { section: "scaleio", option: "rest_server_ip", value: "{{ scaleio_gateway_ip }}" }
-    - { section: "scaleio", option: "rest_server_port", value: "{{ scaleio_gateway_port }}" }
+    - { section: "scaleio", option: "rest_server_port", value: "{{ scaleio_gateway_ssl_port }}" }
     - { section: "scaleio", option: "rest_server_username", value: "admin" }
     - { section: "scaleio", option: "rest_server_password", value: "{{ scaleio_password }}" }
     - { section: "scaleio", option: "protection_domain_name", value: "{{ scaleio_protection_domain }}" }
@@ -53,4 +51,5 @@
     - { section: "scaleio", option: "storage_pools", value: "{{ scaleio_protection_domain}}:{{scaleio_storage_pool }}" }
     - { section: "scaleio", option: "round_volume_capacity", value: "False" }
     - { section: "scaleio", option: "force_delete", value: "True" }
+  notify: pacemaker disable cinder-api
 

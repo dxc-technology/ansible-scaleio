@@ -13,7 +13,8 @@ scaleio_gateway_admin_password: 'Cluster1!'
 scaleio_lia_token: 'Cluster1!'
 scaleio_storage_pool: default
 
-scaleio_gateway_port: 8443
+scaleio_gateway_port: 8081
+scaleio_gateway_ssl_port: 8443
 
 scaleio_callhome_config:
     - { section: 'general', option: 'email_from', value: 'from@somewhere.com' }
@@ -34,7 +35,7 @@ scaleio_mdm_secondary_ip: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_inte
 scaleio_mdm_secondary_mgmt_ip: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_mgmt_interface]['ipv4']['address'] }}"
 
 # This IP address is either a single system or a VIP for HAproxy e.g. in OpenStack 
-scaleio_gateway_ip: 172.17.17.70 
+scaleio_gateway_ip: 172.17.17.112 
 
 scaleio_tb_ip: "{{ hostvars[groups['tb'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
 

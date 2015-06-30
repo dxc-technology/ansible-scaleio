@@ -70,12 +70,12 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL HTTP/1.1 Connector on port 8080
     -->
-    <!-- <Connector port="80" protocol="HTTP/1.1"
+    <Connector port="{{ scaleio_gateway_port }}" protocol="HTTP/1.1"
                connectionTimeout="20000"
-               redirectPort="443"
+               redirectPort="{{ scaleio_gateway_ssl_port }}"
                compression="force"
                compressableMimeType="application/json,application/octet-stream"
-            /> -->
+            />
 			   
     <!-- A "Connector" using the shared thread pool-->
     <!--
@@ -92,7 +92,7 @@
          nodeConnection should be using the OpenSSL style configuration
          described in the APR documentation 
 	-->		 
-    <Connector port="{{ scaleio_gateway_port }}" protocol="org.apache.coyote.http11.Http11NioProtocol"
+    <Connector port="{{ scaleio_gateway_ssl_port }}" protocol="org.apache.coyote.http11.Http11NioProtocol"
 				SSLEnabled="true"
 				acceptCount="100"
                maxThreads="150" scheme="https" secure="true"
@@ -101,7 +101,7 @@
                keystorePass="${keystore.password}"
                compression="force"
                compressableMimeType="application/json,application/octet-stream"
-	       address="{{ ansible_default_ipv4.address }}"
+	       address="{{ hostvars[inventory_hostname]['ansible_'+scaleio_interface].ipv4.address }}"
             />
 	<!-- AJP controllers are used to communicate with apache server, typically required in a high-traffic production situation,
 	 where Tomcat clusters are being run behind an Apache web server and load balancing is required -->
