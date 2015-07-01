@@ -1,2 +1,13 @@
 ---
 # handlers file for openstack-controllers
+#
+
+- name: pacemaker disable cinder-api
+  command: pcs resource disable cinder-api --wait 30
+  run_once: true
+  notify: pacemaker enable cinder-api
+
+- name: pacemaker enable cinder-api
+  command: pcs resource enable cinder-api --wait 30
+  run_once: true
+
