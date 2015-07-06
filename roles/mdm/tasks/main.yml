@@ -3,7 +3,7 @@
 - name: install pre-requisite packages
   yum: name={{ item }} state=latest
   with_items:
-  - mutt 
+  - mutt
   - bash-completion
   - python
 
@@ -11,7 +11,7 @@
   sysctl: name=kernel.shmmax value=209715200
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "6"
 
-- include: ../../install_scaleio.yml 
+- include: ../../install_scaleio.yml
 
 - name: add primary mdm
   command: scli --add_primary_mdm --primary_mdm_ip {{ scaleio_mdm_primary_ip }} --accept_license
@@ -68,17 +68,17 @@
   when: initial_login.rc == 0
 
 - name: secondary node login
-  command: > 
+  command: >
     scli --login
-    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
     --username admin --password {{ scaleio_password }}
   run_once: true
   delegate_to: "{{ scaleio_mdm_secondary_mgmt_ip }}"
 
 - name: add secondary mdm
-  command: > 
-    scli --add_secondary_mdm 
-    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }} 
+  command: >
+    scli --add_secondary_mdm
+    --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
     --secondary_mdm_ip "{{ scaleio_mdm_secondary_ip }}"
   run_once: true
   delegate_to: "{{ scaleio_mdm_secondary_mgmt_ip }}"
