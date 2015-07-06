@@ -19,7 +19,7 @@
     - groups.tb
   run_once: true
 
-# Since there is no global set_fact this needs to be ran 
+# Since there is no global set_fact this needs to be ran
 # over all nodes and set for each.
 #
 - name: set_fact scaleio_mdm_current_primary_ip
@@ -30,18 +30,18 @@
   when: item|success
 
 - name: scli login
-  command: > 
-    scli --login 
-    --username admin 
-    --password "{{ scaleio_password }}" 
+  command: >
+    scli --login
+    --username admin
+    --password "{{ scaleio_password }}"
     --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
   run_once: true
   delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
 
 - name: add tie breaker
-  command: > 
-    scli --add_tb 
-    --tb_ip {{ scaleio_tb_ip }} 
+  command: >
+    scli --add_tb
+    --tb_ip {{ scaleio_tb_ip }}
     --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
   run_once: true
   delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
@@ -50,8 +50,8 @@
   ignore_errors: true
 
 - name: switch to cluster mode
-  command: > 
-    scli --switch_to_cluster_mode 
+  command: >
+    scli --switch_to_cluster_mode
     --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
   run_once: true
   delegate_to: "{{ scaleio_mdm_current_primary_ip }}"
@@ -59,8 +59,8 @@
 
 - name: create the protection domain
   command: >
-    scli --add_protection_domain 
-    --protection_domain_name {{ scaleio_protection_domain }} 
+    scli --add_protection_domain
+    --protection_domain_name {{ scaleio_protection_domain }}
     --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
   run_once: true
   delegate_to: "{{ scaleio_mdm_current_primary_ip }}"

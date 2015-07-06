@@ -7,11 +7,11 @@
 - include: ../../install_scaleio.yml
 
 - name: Add mdm ip's to gateway config
-  lineinfile: 
+  lineinfile:
     backup: true
-    dest: "{{ gateway_user_properties_file }}" 
-    line: "mdm.ip.addresses={{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}" 
-    regexp: "^mdm.ip.addresses=$" 
+    dest: "{{ gateway_user_properties_file }}"
+    line: "mdm.ip.addresses={{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}"
+    regexp: "^mdm.ip.addresses=$"
     state: present
 
 - name: Configure gateway port
@@ -21,8 +21,8 @@
     backup: true
 
 - name: Setup gateway admin password
-  command: > 
+  command: >
     java -jar /opt/emc/scaleio/gateway/webapps/ROOT/resources/install-CLI.jar
-    --reset_password "{{ scaleio_gateway_admin_password }}" 
+    --reset_password "{{ scaleio_gateway_admin_password }}"
     --config_file {{ gateway_user_properties_file }}
   notify: restart gateway

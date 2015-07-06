@@ -1,8 +1,8 @@
---- 
+---
 - name: Install Common
   hosts: all
   tags: common
-  roles: 
+  roles:
   - common
 
 - name: Configure mdm
