@@ -1,6 +1,6 @@
 ---
 - name: Install Common
-  hosts: all
+  hosts: scaleio
   tags: common
   roles:
   - common

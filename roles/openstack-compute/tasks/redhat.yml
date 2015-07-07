@@ -21,3 +21,10 @@
     option: volume_drivers
     value: "{{ nova_volume_drivers }}"
     backup: true
+  register: nova
+
+- name: restart openstack-nova-compute
+  service:
+    name: openstack-nova-compute
+    state: restarted
+  when: nova|changed

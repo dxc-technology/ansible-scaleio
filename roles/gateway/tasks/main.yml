@@ -25,4 +25,53 @@
     java -jar /opt/emc/scaleio/gateway/webapps/ROOT/resources/install-CLI.jar
     --reset_password "{{ scaleio_gateway_admin_password }}"
     --config_file {{ gateway_user_properties_file }}
-  notify: restart gateway
+
+- name: stop gateway
+  service:
+    name: scaleio-gateway
+    state: stopped
+
+- name: wait for gateway to stop
+  pause: 
+    seconds: 10
+
+- name: start gateway
+  service:
+    name: scaleio-gateway
+    state: started
+
+- name: wait for gateway to start
+  pause:
+    seconds: 15
+
+- name: is gateway running
+  shell: "ss -tanp | grep 8443 | grep java"
+  register: gateway_port
+  ignore_errors: true
+
+#- name: is gateway running
+#  wait_for:
+#    host: "{{ hostvars[inventory_hostname]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
+#    port: "{{ scaleio_gateway_ssl_port }}"
+#    delay: 30 
+#    timeout: 30 
+#  ignore_errors: true
+#  register: gateway_port
+#
+- name: stop gateway if port is unavailable
+  service:
+    name: scaleio-gateway
+    state: stopped 
+  when: gateway_port|failed
+
+- name: pause if port is unavailable
+  pause:
+    seconds: 10
+  when: gateway_port|failed
+
+- name: start gateway if port is unavailable
+  service:
+    name: scaleio-gateway
+    state: started
+  when: gateway_port|failed
+
