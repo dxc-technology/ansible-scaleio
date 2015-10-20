@@ -35,7 +35,7 @@ scaleio_mdm_secondary_ip: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_inte
 scaleio_mdm_secondary_mgmt_ip: "{{ hostvars[groups['mdm'][1]]['ansible_'+scaleio_mgmt_interface]['ipv4']['address'] }}"
 
 # This IP address is either a single system or a VIP for HAproxy e.g. in OpenStack 
-scaleio_gateway_ip: 172.17.17.112 
+scaleio_gateway_ip: 
 
 scaleio_tb_ip: "{{ hostvars[groups['tb'][0]]['ansible_'+scaleio_interface]['ipv4']['address'] }}"
 
