@@ -51,6 +51,6 @@
     - { section: "scaleio", option: "storage_pools", value: "{{ scaleio_protection_domain}}:{{scaleio_storage_pool }}" }
     - { section: "scaleio", option: "round_volume_capacity", value: "True" }
     - { section: "scaleio", option: "force_delete", value: "True" }
-    - { section: "scaleio", option: "unmap_volume_before_deletion", "True" } 
+    - { section: "scaleio", option: "unmap_volume_before_deletion", value: "True" } 
   notify: pacemaker disable cinder-api
 
