@@ -6,7 +6,7 @@
     mode: "0644"
   register: file
   with_fileglob:
-    - "*{{role_name}}*"
+    - "files/*{{role_name}}*"
 
 - name: install package
   yum:
