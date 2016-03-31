@@ -6,8 +6,9 @@
   command: pcs resource disable cinder-api --wait 30
   run_once: true
   notify: pacemaker enable cinder-api
+  when: use_pacemaker
 
 - name: pacemaker enable cinder-api
   command: pcs resource enable cinder-api --wait 30
   run_once: true
-
+  when: use_pacemaker

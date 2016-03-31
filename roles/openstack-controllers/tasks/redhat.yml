@@ -52,5 +52,5 @@
     - { section: "scaleio", option: "round_volume_capacity", value: "True" }
     - { section: "scaleio", option: "force_delete", value: "True" }
     - { section: "scaleio", option: "unmap_volume_before_deletion", value: "True" } 
-  notify: pacemaker disable cinder-api
+#  notify: pacemaker disable cinder-api
 
