@@ -57,7 +57,7 @@
   command: >
     scli --add_sds
     --mdm_ip {{ scaleio_mdm_primary_ip }},{{ scaleio_mdm_secondary_ip }}
-    --sds_ip {{ hostvars[inventory_hostname]['ansible_'+scaleio_interface]['ipv4']['address'] }}
+    --sds_ip {{ hostvars[inventory_hostname]['ansible_'+hostvars[inventory_hostname]['scaleio_interface']]['ipv4']['address'] }}
     --storage_pool_name {{ scaleio_storage_pool }}
     --device_path {{ disks.ansible_available_disks|join(',') }}
     --sds_name "{{ inventory_hostname }}"
