@@ -1,4 +1,11 @@
 ---
+# This playbook will deploy and configure EMC ScaleIO for use with RHOSP.
+
+- name: Prepare for install
+  hosts: localhost
+  roles:
+  - prep-scaleio
+
 - name: Install Common
   hosts: scaleio
   tags: common

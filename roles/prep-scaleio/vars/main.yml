@@ -1,0 +1,7 @@
+---
+# These are the variables for the prep-scaleio role.
+ansible_scaleio_path: "{{ projects_base_path }}/ansible-scaleio"
+scaleio_rpm_path: "{{ ansible_scaleio_path }}/files/"
+scaleio_compute_path: "{{ ansible_scaleio_path }}/roles/openstack-compute/files/"
+scaleio_controllers_path: "{{ ansible_scaleio_path }}/roles/openstack-controllers/files/"
+scaleio_path: "{{ resources_base_path }}/scaleio"
