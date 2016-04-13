@@ -1,0 +1,10 @@
+---
+# Openstack release for extracting driver zip file
+openstack_release: 'juno'
+
+# The name of the EMC SCaleIO files downloaded from EMC. Currently only version
+# 1.32.2 is supported.
+scaleio_files:
+  - ScaleIO_1.32.2_Gateway_for_Linux_Download.zip
+  - ScaleIO_1.32.2_OpenStack_Driver_Download.zip
+  - ScaleIO_1.32.2_RHEL7_Download.zip

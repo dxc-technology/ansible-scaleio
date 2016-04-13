@@ -1,0 +1,64 @@
+---
+# The prep-scaleio play will take the scaleio software zip file, extract and copy
+# the files to the ansible-scaleio project directories as needed.
+
+# The check for these files is done in separate tasks to make debugging easier.
+
+- name: Check if the {{ scaleio_files[0] }} file exists in /opt/autodeploy/resources/scaleio
+  stat:
+    path: "{{ scaleio_path }}/{{ scaleio_files[0] }}"
+  register: rhel_zip
+
+- name: Is the {{ scaleio_files[0] }} file available
+  fail: msg=" The {{ scaleio_files[0] }} file has not been downloaded, please verify all required files have been downloaded and rerun the play "
+  when: not (rhel_zip.stat.exists)
+
+- name: Check if the {{ scaleio_files[1] }} file exists in /opt/autodeploy/resources/scaleio
+  stat:
+    path: "{{ scaleio_path }}/{{ scaleio_files[1] }}"
+  register: gateway_zip
+
+- name: Is the {{ scaleio_files[1] }} file available
+  fail: msg=" The {{ scaleio_files[1] }} file has not been downloaded, please verify all required files have been downloaded and rerun the play "
+  when: not (gateway_zip.stat.exists)
+
+- name: Check if the {{ scaleio_files[2] }} file exists in /opt/autodeploy/resources/scaleio
+  stat:
+    path: "{{ scaleio_path }}/{{ scaleio_files[2] }}"
+  register: osd_zip
+
+- name: Is the {{ scaleio_files[2] }} file available
+  fail: msg=" The {{ scaleio_files[2] }} file has not been downloaded, please verify all required files have been downloaded and rerun the play "
+  when: not (osd_zip.stat.exists)
+
+- name: Extract the ScaleIO source files
+  unarchive:
+    src: "{{ scaleio_path }}/{{ item }}"
+    dest: "{{ scaleio_path }}"
+  with_items: scaleio_files
+
+- name: Find the extracted RPM files
+  shell: 'find {{ scaleio_path }} -type f -name "*.rpm"'
+  register: rpm_files
+
+- name: Copy the RPMs to the ansible-scaleio project
+  copy:
+    src: "{{ item }}"
+    dest: "{{ scaleio_rpm_path }}"
+  with_items: rpm_files.stdout_lines
+
+- name: Find the OpenStack Release driver zip files
+  shell: 'find {{ scaleio_path }} -type f -name "*{{ openstack_release }}*.zip"'
+  register: osd_files
+
+- name: Extract the OpenStack Release driver files to the openstack-compute role
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ scaleio_compute_path }}"
+  with_items: osd_files.stdout
+
+- name: Extract the OpenStack Release driver files to the openstack-controllers role
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ scaleio_controllers_path }}"
+  with_items: osd_files.stdout
